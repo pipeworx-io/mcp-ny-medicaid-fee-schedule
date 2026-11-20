@@ -1,0 +1,55 @@
+[
+  {
+    "name": "ny_fee_lookup",
+    "description": "New York MEDICAID (not Medicare) fee for a procedure code: the statewide practitioner fee schedule per CPT/HCPCS code (physician medicine, drugs, radiology, surgery, anesthesia; laboratory; DME; dental CDT codes), as published by the New York State Department of Health in the Medicaid provider manuals (eMedNY). Returns the non-facility, facility and professional-component fees (or the single fee), by-report / prior-approval flags, follow-up days, the manual and section the row comes from, and that schedule's effective date. This is the fee-for-service schedule per code, NOT clinic or FQHC rates and not what a managed-care plan pays. An unmatched code returns the nearest codes and what each schedule covers.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "5-character procedure code, as a string: CPT or HCPCS (e.g. \"99213\", \"J1100\", \"G0108\", \"0037U\") or dental CDT (e.g. \"D1110\"). A trailing 2-character modifier is dropped."
+        },
+        "manual": {
+          "type": "string",
+          "description": "Optional: limit to one schedule, e.g. \"physician-surgery\", \"laboratory\", \"dme\", \"dental\" (see ny_fee_manuals for the keys)."
+        }
+      },
+      "required": [
+        "code"
+      ]
+    }
+  },
+  {
+    "name": "ny_fee_search",
+    "description": "Search the New York Medicaid statewide fee schedules (New York State Department of Health, Medicaid provider manuals, eMedNY) by procedure description and/or code prefix, e.g. \"colonoscopy\", \"chest\" with prefix 7104, or prefix \"D11\" for dental cleanings. Every word of the query must appear in the description; results carry code, description, fees, flags, manual, section and effective date. Physician descriptions are truncated by the publisher to 40 characters. Fee-for-service schedule per code, not clinic or FQHC rates. An unmatched query returns the rows that match some of its words and the valid manuals.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Description words, e.g. \"colonoscopy\" or \"chest x-ray\". All words must appear."
+        },
+        "code_prefix": {
+          "type": "string",
+          "description": "Optional code prefix as a string, e.g. \"9921\", \"D11\", \"J1\"."
+        },
+        "manual": {
+          "type": "string",
+          "description": "Optional: one schedule key, e.g. \"physician-radiology\", \"laboratory\", \"dme\", \"dental\"."
+        },
+        "limit": {
+          "type": "number",
+          "description": "Max rows (default 25, max 200)."
+        }
+      }
+    }
+  },
+  {
+    "name": "ny_fee_manuals",
+    "description": "List the New York Medicaid fee schedules this pack carries (New York State Department of Health, Medicaid provider manuals, eMedNY): each manual and section with its effective date, when the workbook was posted, row count and the publisher's footnotes, plus how to read the fee columns and what is not covered. Start here to see which schedule and date a fee comes from.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  }
+]
